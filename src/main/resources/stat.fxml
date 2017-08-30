@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #6790E3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.mareksowa.weatherApp.controllers.StatController">
+   <children>
+      <ListView fx:id="listOfCity" layoutX="7.0" layoutY="7.0" prefHeight="383.0" prefWidth="179.0" />
+      <BarChart fx:id="chartWeather" layoutX="197.0" layoutY="51.0" prefHeight="316.0" prefWidth="389.0" title="Weather">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <Button fx:id="btnBack" layoutX="476.0" layoutY="7.0" mnemonicParsing="false" style="-fx-background-color: #BCC5D8;" text="back to main">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
+      <Label layoutX="300.0" layoutY="379.0" text="average temp :">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <effect>
+            <Glow />
+         </effect>
+      </Label>
+      <Label fx:id="lblAverageTemp" layoutX="399.0" layoutY="379.0" text="0">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <effect>
+            <Glow />
+         </effect>
+      </Label>
+   </children>
+</AnchorPane>

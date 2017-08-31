@@ -12,10 +12,8 @@ import java.util.concurrent.Executors;
 
 public class WeatherService {
 
-    //SINGLETON  -tworzona jest tylko jedna instancja klasy.
-    //serwisy - maja za zadanie przyjac zadanie cos z nim zrobic i tyle. np. serwis sms, przesylamy mu tekst a serwis tylko wysyla sms.
-
-    private static WeatherService INSTANCE = new WeatherService(); //tylko jedna instancja (INSTANCE - staticki piszemy z duzych liter)
+    //generate singleton
+    private static WeatherService INSTANCE = new WeatherService(); //one instance allowed here
     public static WeatherService getService(){ // metoda zwracajaca instancje klasy
         return INSTANCE;
     }
@@ -23,53 +21,48 @@ public class WeatherService {
     private static ExecutorService executorService;
 
 
-    private WeatherService(){ //prywatny konstruktor, nie ma mozliwosci tworzenia instancji z innych klas
+    private WeatherService(){ //to prevent create more than one class
         executorService = Executors.newFixedThreadPool(2);
-        observerList = new ArrayList<>(); // tworzymy liste obserwujacych z interfejsu
+        observerList = new ArrayList<>(); // generate observer list to later update/notify all obserwers
     }
 
+    //kill all threads
     public static void terminateExecutorService(){
         executorService.shutdown();
     }
 
-    //dodajemy obserwerow do naszej listy
+    //add observer to obserwer lists
     public void registerObserver(IWeatherObserver observer){
         observerList.add(observer);
     }
 
-    //informujemy obserwatorow
-    private void notifyObserwers(WeatherData data){
+    //notify all obserwvrs
+    private void notifyObservers(WeatherData data){
         for (IWeatherObserver iWeatherObserver : observerList) {
             iWeatherObserver.onWeatherUpdate(data);
         }
     }
 
-
+    //get data from API and save it in JSon
     public void init(final String city){
-        Runnable taskInit = new Runnable() {
-            @Override
-            public void run() {
-                String text = Utils.readWebsideContext(Config.API_URL + city + "&appid=" + Config.APP_KEY);
-                parseJsonFromString(text);
-            }
+        Runnable taskInit = () -> {
+            String text = Utils.readWebsideContext(Config.API_URL + city + "&appid=" + Config.APP_KEY);
+            parseJsonFromString(text);
         };
         executorService.execute(taskInit);
     }
 
-
     private void parseJsonFromString(String text) { //JSON object korzysta z bilbioteki JSON ktora zaimplementowaliscmy
         WeatherData data = new WeatherData();
         JSONObject root = new JSONObject(text);
-
         JSONObject main = root.getJSONObject("main");
-
             data.setTemp(main.getDouble("temp"));
             data.setPressure(main.getInt("pressure"));
             data.setHumidity(main.getInt("humidity"));
 
         JSONObject cloudsObject = root.getJSONObject("clouds");
             data.setClouds(cloudsObject.getInt("all"));
-        notifyObserwers(data);
+        notifyObservers(data);
     }
 
 }

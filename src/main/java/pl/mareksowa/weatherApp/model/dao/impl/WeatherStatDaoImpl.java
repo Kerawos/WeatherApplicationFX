@@ -9,14 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalDouble;
 
 public class WeatherStatDaoImpl implements IWeatherStatDao {
 
+    //instance of SQL connector
     private DatabaseConnector connector = DatabaseConnector.getInstance();
 
-    @Override
+    @Override // get stats from API and put it in our SQL
     public void saveStat(WeatherStat weatherStat) {
         PreparedStatement preparedStatement = connector.getNewPreparedStatement("INSERT INTO weather VALUES(?,?,?)");
         try {
@@ -27,10 +27,9 @@ public class WeatherStatDaoImpl implements IWeatherStatDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    @Override
+    @Override // take last 6 records to show it in chart to user after clicking city from list
     public List<WeatherStat> getLastSixStat(String cityName) {
         List<WeatherStat> weatherStatList = new ArrayList<>();
         PreparedStatement preparedStatement = connector.getNewPreparedStatement("SELECT * FROM weather WHERE city = ? ORDER BY id DESC LIMIT 6");
@@ -47,15 +46,13 @@ public class WeatherStatDaoImpl implements IWeatherStatDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return weatherStatList;
     }
 
-    @Override
+    @Override // generate list of all cities from SQL
     public List<String> getAllCities() {
         List<String> cityNames = new ArrayList<>();
         PreparedStatement preparedStatement = connector.getNewPreparedStatement("SELECT DISTINCT city FROM weather");
-
         try {
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -66,15 +63,11 @@ public class WeatherStatDaoImpl implements IWeatherStatDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return cityNames;
     }
 
-
-    @Override
+    @Override // calc average temp
     public Double calcAverageTempForSelectedCity(String city){
-
-
         List<Double> temps = new ArrayList<>();
         PreparedStatement preparedStatement = connector.getNewPreparedStatement("SELECT temp FROM weather WHERE city = ?");
         try {
@@ -85,16 +78,13 @@ public class WeatherStatDaoImpl implements IWeatherStatDao {
             while (resultSet.next()){
                 temps.add(resultSet.getDouble("temp")); //have
             }
-
             //temps.forEach(l-> System.out.println(l)); //for debugging
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         OptionalDouble result = temps.stream().mapToDouble(a->a).average();
         double d = result.orElseThrow(IllegalStateException::new);
-        //System.out.println("Srednia to: " + temps.stream().mapToDouble(a->a).average());
-        //System.out.println("Srednia 2 to: " + d);
+        //System.out.println("Srednia to: " + temps.stream().mapToDouble(a->a).average() + "Srednia 2 to: " + d); // for debugging only
         return d;
     }
 }

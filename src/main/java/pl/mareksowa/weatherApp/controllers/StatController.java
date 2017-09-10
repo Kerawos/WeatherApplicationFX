@@ -1,5 +1,10 @@
 package pl.mareksowa.weatherApp.controllers;
 
+import pl.mareksowa.weatherApp.model.WeatherStat;
+import pl.mareksowa.weatherApp.model.dao.IWeatherStatDao;
+import pl.mareksowa.weatherApp.model.dao.impl.WeatherStatDaoImpl;
+import pl.mareksowa.weatherApp.model.utils.DatabaseConnector;
+import pl.mareksowa.weatherApp.model.utils.Utils;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -13,12 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import pl.mareksowa.weatherApp.model.WeatherStat;
-import pl.mareksowa.weatherApp.model.dao.IWeatherStatDao;
-import pl.mareksowa.weatherApp.model.dao.impl.WeatherStatDaoImpl;
-import pl.mareksowa.weatherApp.model.utils.DatabaseConnector;
-import pl.mareksowa.weatherApp.model.utils.Utils;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,9 +37,8 @@ public class StatController implements Initializable {
     @FXML
     Label lblAverageTemp;
 
-    private DatabaseConnector connector = DatabaseConnector.getInstance();
+    //private DatabaseConnector connector = DatabaseConnector.getInstance();
     private IWeatherStatDao iWeatherStatDao = new WeatherStatDaoImpl();
-
 
 
     @Override
@@ -49,7 +47,6 @@ public class StatController implements Initializable {
         loadCityNames();
         registerOnClickItemOnList();
     }
-
 
     //back to main window
     public void registerButtonShowMain(){
@@ -85,6 +82,7 @@ public class StatController implements Initializable {
     private void registerOnClickItemOnList(){
         listOfCity.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             loadChart((String) newValue);
+            System.out.println("Chart for:" + newValue + " loaded");
             iWeatherStatDao.calcAverageTempForSelectedCity((String)newValue);
             lblAverageTemp.setText(String.valueOf(Math.round(iWeatherStatDao.calcAverageTempForSelectedCity((String)newValue))*100/100) + "C"); //add round to two points
         });

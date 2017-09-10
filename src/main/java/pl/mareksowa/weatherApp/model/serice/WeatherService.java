@@ -17,7 +17,7 @@ public class WeatherService {
     public static WeatherService getService(){ // metoda zwracajaca instancje klasy
         return INSTANCE;
     }
-    private List<IWeatherObserver> observerList;
+    private static List<IWeatherObserver> observerList;
     private static ExecutorService executorService;
 
 
@@ -36,6 +36,11 @@ public class WeatherService {
         observerList.add(observer);
     }
 
+    //remove obserwer
+    public static void removeObserver() {
+        observerList.remove(observerList.size()-1); // remove last obserwer to prevent ++ infinite
+    }
+
     //notify all obserwvrs
     private void notifyObservers(WeatherData data){
         for (IWeatherObserver iWeatherObserver : observerList) {
@@ -46,7 +51,7 @@ public class WeatherService {
     //get data from API and save it in JSon
     public void init(final String city){
         Runnable taskInit = () -> {
-            String text = Utils.readWebsideContext(Config.API_URL + city + "&appid=" + Config.APP_KEY);
+            String text = Utils.readWebsiteContext(Config.API_URL + city + "&appid=" + Config.APP_KEY);
             parseJsonFromString(text);
         };
         executorService.execute(taskInit);

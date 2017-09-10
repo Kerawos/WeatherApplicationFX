@@ -1,33 +1,31 @@
 package pl.mareksowa.weatherApp.model.utils;
 
+import pl.mareksowa.weatherApp.Config;
+
 import java.sql.*;
 
 public class DatabaseConnector {
 
-    private static DatabaseConnector ourInstance = new DatabaseConnector(); // tworzymy prywatna instancje klasy odarrazu przy deklaracji (SINGLETON)
+    private static DatabaseConnector ourInstance = new DatabaseConnector(); // private instance Singleton
 
     public static DatabaseConnector getInstance() {
         return ourInstance;
     }
-    //dane dostepowe do bazu statyczne
-    private static final String SQL_LINK = "jdbc:mysql://5.135.218.27:3306/Marek?characterEncoding=utf8";
-    private static final String SQL_USER = "Marek";
-    private static final String SQL_PASS = "Krakuski1";
-    private static final String SQL_CLASS = "com.mysql.jdbc.Driver";
 
-    //przechowuje polaczenie
+
+    //save connect
     private Connection connection;
 
-    //prywatny konstruktor by nie tworzyc instancji tej kalsu - przy SINGLETONIE
+    //Singleton constructor
     private DatabaseConnector(){
         connect();
-        System.out.println("Polaczono");
+        System.out.println("Connect");
     }
 
     private void connect(){
         try {
-            Class.forName(SQL_CLASS).newInstance();
-            connection = DriverManager.getConnection(SQL_LINK, SQL_USER, SQL_PASS);
+            Class.forName(Config.SQL_CLASS).newInstance();
+            connection = DriverManager.getConnection(Config.SQL_LINK, Config.SQL_USER, Config.SQL_PASS);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -40,7 +38,7 @@ public class DatabaseConnector {
     }
 
 
-    //statementy sluza do zapytan do serwerow
+    //sstatement for SQL orders
     public PreparedStatement getNewPreparedStatement(String sql){
         try {
             return connection.prepareStatement(sql);

@@ -1,6 +1,5 @@
 package pl.mareksowa.weatherApp.model;
 
-//klasa czysto nosnikowa (tlyko do przysylania danych
 public class WeatherData {
 
     private double temp;
@@ -19,7 +18,6 @@ public class WeatherData {
         this.pressure = pressure;
         this.clouds = clouds;
     }
-
 
 
     public double getTemp() {

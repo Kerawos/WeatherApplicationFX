@@ -12,19 +12,18 @@ public class Utils { //Utils contains common methods
 
     public static String readWebsiteContext(String url){
         StringBuilder builder = new StringBuilder();
-
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();//cast to HTTP
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
             InputStream inputStream = httpURLConnection.getInputStream();
             int response;
-            while ((response = inputStream.read()) != -1){ // back read field
+            while ((response = inputStream.read()) != -1){
                 builder.append((char)response);
             }
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return builder.toString(); //return our build string
+        return builder.toString();
     }
 
 
